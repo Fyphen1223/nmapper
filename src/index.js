@@ -1,93 +1,40 @@
-import fs from 'fs';
 import util from 'util';
 import child_process from 'child_process';
-import shodanPorts from './constants.js';
 import { parseStringPromise } from 'xml2js';
+
+import fs from 'node:fs';
 
 const exec = util.promisify(child_process.exec);
 
-async function scan(ip) {
+async function scan(ip, args) {
 	const res = await exec(
 		`${process.platform == 'win32' ? 'nmap' : 'sudo nmap'} ${createArguments([
 			ip,
 			'-oX',
 			'-',
-			'-sS',
-			'-A',
-			'-p',
-			shodanPorts.join(','),
+			args,
 		])}`
 	);
 	fs.writeFileSync('output.txt', res.stdout);
-	return res.stdout;
+	return await parseNmapOutput(res.stdout);
 }
 
 function createArguments(list) {
-	return list.join(' ');
+	const args = list[3].join(' ');
+	return `${list[0]} ${list[1]} ${list[2]} ${args}`;
 }
-
-/*
-function formatJSON(nmapOutput) {
-	let r = nmapOutput.nmaprun;
-	delete r['$'];
-	delete r['hosthint'];
-	delete r['scaninfo'];
-	delete r['verbose'];
-	delete r['debugging'];
-	r['host']['time'] = r['host']['$'];
-	delete r['host']['$'];
-	r['host']['status'] = r['host']['status']['$'];
-	delete r['host']['status']['$'];
-	r['host']['address'] = r['host']['address']['$'];
-
-	/*
-	r['host']['hostnames'] = r['host']['hostnames']['hostname'];
-	let hostnames = [];
-	if (typeof r['host']?.['hostnames']?.['hostname']?.['$'] === 'object') {
-		hostnames.push(r['host']['hostnames']['hostname']['$']);
-	} else {
-		r['host']['hostnames'].map((hostname) => {
-			hostnames.push(hostname['$']);
-			delete hostname['$'];
-		});
-	}
-
-	r['host']['hostnames'] = hostnames;
-	if (r['host']?.['uptime']) {
-		r['host']['uptime'] = r['host']['uptime']['$'];
-	}
-	r['host']['distance'] = r['host']['distance']['$'];
-	r['host']['tcpsequence'] = r['host']['tcpsequence']['$'];
-	r['host']['ipidsequence'] = r['host']['ipidsequence']['$'];
-	r['host']['tcptssequence'] = r['host']['tcptssequence']['$'];
-	if (r['host']['trace']?.['$']) {
-		r['host']['trace']['used'] = r['host']['trace']['$'];
-		delete r['host']['trace']['$'];
-	}
-	if (r['host']['trace']?.['hop']?.['$']) {
-		r['host']['trace']['hop'] = r['host']['trace']['hop']['$'];
-		delete r['host']['trace']['$'];
-	}
-
-	r['host']['ports']['extraports']['state'] = r['host']['ports']['extraports']['$'];
-	delete r['host']['ports']['extraports']['$'];
-	r['host']['ports']['extraports']['extrareasons'] =
-		r['host']['ports']['extraports']['extrareasons']['$'];
-	r['host']['ports']['port'].forEach((port) => {
-		r['host']['ports']['port'][r['host']['ports']['port'].indexOf(port)] =
-			transformJSON(port);
-	});
-	r['host']['os'] = transformOSJSON(r['host']['os']);
-
-	return r;
-}
-*/
 
 function transformJSON(data) {
 	let r = data.nmaprun;
 	r = mergeDollarKeys(r);
 	r = manipulateScript(r);
 	r = manipulateElem(r);
+	if (r.host.hostnames.hostname && !Array.isArray(r.host.hostnames.hostname)) {
+		r.host.hostnames.hostname = [r.host.hostnames.hostname];
+	}
+	if (r.host.ports.port && !Array.isArray(r.host.ports.port)) {
+		r.host.ports.port = [r.host.ports.port];
+	}
 	return r;
 }
 
@@ -139,11 +86,13 @@ function manipulateElem(script) {
 			script[key] = manipulateElem(script[key]);
 		}
 		if ('elem' in script) {
-			console.log(script.elem);
 			if (!Array.isArray(script.elem)) {
 				script.elem = [script.elem];
 			}
 			script.elem.forEach((e) => {
+				if (typeof e === 'string') {
+					return;
+				}
 				e[e.key] = e['_'];
 				delete e['_'];
 				delete e['key'];
@@ -155,30 +104,6 @@ function manipulateElem(script) {
 	}
 }
 
-function transformOSJSON(input) {
-	console.log(input);
-	function transform(obj) {
-		if (Array.isArray(obj)) {
-			// Handle array elements recursively
-			return obj.map(transform);
-		} else if (typeof obj === 'object' && obj !== null) {
-			const newObj = {};
-			for (const key in obj) {
-				if (key === '$') {
-					// Merge `$` key's value into the parent object
-					Object.assign(newObj, transform(obj[key]));
-				} else {
-					// Process nested objects
-					newObj[key] = transform(obj[key]);
-				}
-			}
-			return newObj;
-		}
-		return obj; // Return non-object types as-is
-	}
-
-	return transform(input);
-}
 function bringUp$(d) {
 	if (d['$']) {
 		Object.assign(d, d['$']);
