@@ -2,20 +2,16 @@ import util from 'util';
 import child_process from 'child_process';
 import { parseStringPromise } from 'xml2js';
 
-import fs from 'node:fs';
-
 const exec = util.promisify(child_process.exec);
 
 async function scan(ip, args) {
 	const res = await exec(
 		`${process.platform == 'win32' ? 'nmap' : 'sudo nmap'} ${createArguments([
 			ip,
-			'-oX',
-			'-',
+			'-oX -',
 			args,
 		])}`
 	);
-	fs.writeFileSync('output.txt', res.stdout);
 	return await parseNmapOutput(res.stdout);
 }
 
