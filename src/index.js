@@ -4,7 +4,7 @@ import { parseStringPromise } from 'xml2js';
 
 const exec = util.promisify(child_process.exec);
 
-async function scan(ip, args) {
+export async function scan(ip, args) {
 	const res = await exec(
 		`${process.platform == 'win32' ? 'nmap' : 'sudo nmap'} ${createArguments([
 			ip,
@@ -100,7 +100,7 @@ function manipulateElem(script) {
 	}
 }
 
-function bringUp$(d) {
+export function bringUp$(d) {
 	if (d['$']) {
 		Object.assign(d, d['$']);
 		delete d['$'];
@@ -108,7 +108,7 @@ function bringUp$(d) {
 	return d;
 }
 
-async function parseNmapOutput(nmapOutput) {
+export async function parseNmapOutput(nmapOutput) {
 	const jsonResult = await parseStringPromise(nmapOutput, { explicitArray: false });
 	return transformJSON(jsonResult);
 }
@@ -116,4 +116,3 @@ async function parseNmapOutput(nmapOutput) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { scan, parseNmapOutput, bringUp$ };
 }
-export default { scan, parseNmapOutput, bringUp$ };
