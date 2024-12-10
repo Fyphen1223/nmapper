@@ -113,4 +113,7 @@ async function parseNmapOutput(nmapOutput) {
 	return transformJSON(jsonResult);
 }
 
+
+module.exports = { scan, parseNmapOutput, bringUp$ };
+
 export default { scan, parseNmapOutput, bringUp$ };
