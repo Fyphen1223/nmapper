@@ -113,7 +113,8 @@ async function parseNmapOutput(nmapOutput) {
 	return transformJSON(jsonResult);
 }
 
-
-module.exports = { scan, parseNmapOutput, bringUp$ };
-
-export default { scan, parseNmapOutput, bringUp$ };
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { scan, parseNmapOutput, bringUp$ };
+} else {
+    export default { scan, parseNmapOutput, bringUp$ };
+}
