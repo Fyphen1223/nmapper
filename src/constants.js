@@ -1,4 +1,4 @@
-const shodanPorts = [
+export const shodanPorts = [
 	7, 11, 13, 15, 17, 19, 20, 21, 22, 23, 24, 25, 26, 37, 38, 43, 49, 51, 53, 69, 70, 79,
 	80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 95, 96, 97, 98, 99, 100, 102, 104,
 	106, 110, 111, 113, 119, 121, 123, 129, 131, 135, 137, 139, 143, 154, 161, 175, 179,
@@ -92,4 +92,3 @@ const shodanPorts = [
 if (typeof module !== 'undefined' && module.exports) {
     module.export = shodanPorts;
 }
-export default shodanPorts;
