@@ -89,4 +89,6 @@ const shodanPorts = [
 	62078, 64738, 65000, 65129, 65389, 65535,
 ];
 
+module.export = shodanPorts;
+
 export default shodanPorts;
