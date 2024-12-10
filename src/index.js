@@ -115,6 +115,5 @@ async function parseNmapOutput(nmapOutput) {
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { scan, parseNmapOutput, bringUp$ };
-} else {
-    export default { scan, parseNmapOutput, bringUp$ };
 }
+export default { scan, parseNmapOutput, bringUp$ };
