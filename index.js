@@ -28,4 +28,6 @@ async function formatResult() {
 }
 */
 
+module.exports = { nmap };
+
 export default { nmap };
