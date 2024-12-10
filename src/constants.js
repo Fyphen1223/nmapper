@@ -91,6 +91,5 @@ const shodanPorts = [
 
 if (typeof module !== 'undefined' && module.exports) {
     module.export = shodanPorts;
-} else {
-    export default shodanPorts;
 }
+export default shodanPorts;
