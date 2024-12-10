@@ -29,8 +29,6 @@ async function formatResult() {
 */
 
 
-export default { nmap };
-
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { nmap };
 } else {
