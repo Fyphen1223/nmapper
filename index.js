@@ -31,6 +31,5 @@ async function formatResult() {
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { nmap };
-} else {
-    export default { nmap };	
 }
+export default { nmap };
