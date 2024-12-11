@@ -16,8 +16,8 @@ export async function scan(ip, args) {
 }
 
 function createArguments(list) {
-	const args = list[3].join(' ');
-	return `${list[0]} ${list[1]} ${list[2]} ${args}`;
+	const args = list[2].join(' ');
+	return `${list[0]} ${list[1]} ${args}`;
 }
 
 function transformJSON(data) {
@@ -114,5 +114,5 @@ export async function parseNmapOutput(nmapOutput) {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { scan, parseNmapOutput, bringUp$ };
+	module.exports = { scan, parseNmapOutput, bringUp$ };
 }

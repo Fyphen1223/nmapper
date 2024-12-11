@@ -1,6 +1,5 @@
 //import fs from 'node:fs';
 import { scan, parseNmapOutput, bringUp$ } from './src/index.js';
-console.log(scan);
 
 //import shodanPorts from './src/constants.js';
 
