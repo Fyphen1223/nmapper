@@ -1,5 +1,7 @@
 //import fs from 'node:fs';
-import nmap from './src/index.js';
+import { scan, parseNmapOutput, bringUp$ } from './src/index.js';
+console.log(scan);
+
 //import shodanPorts from './src/constants.js';
 
 /*
@@ -29,6 +31,7 @@ async function formatResult() {
 */
 
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { nmap };
+	module.exports = { scan, parseNmapOutput, bringUp$ };
 }
-export default nmap;
+
+export default { scan, parseNmapOutput, bringUp$ };
